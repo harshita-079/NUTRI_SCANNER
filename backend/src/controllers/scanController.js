@@ -3,7 +3,6 @@ import validateImage from "../services/imageValidationService.js";
 import extractText from "../services/ocrService.js";
 import extractStructuredData from "../services/geminiStructuredExtractionService.js";
 import cleanOCRText from "../utils/textCleaner.js";
-import extractIngredientsOnly from "../services/ingredientAnalysisService.js";
 import validateOCRText from "../services/ocrValidationService.js";
 
 const scanImage = async (req, res) => {
@@ -53,7 +52,7 @@ const scanImage = async (req, res) => {
     //const imageUrl = `http://localhost:5000/uploads/${imageData.imageName}`;
     const baseUrl =
       process.env.BASE_URL || `${req.protocol}://${req.get("host")}`;
-    const imageUrl = `${baseUrl}/uploads/${imageData.imageName}`;
+    //const imageUrl = `${baseUrl}/uploads/${imageData.imageName}`;
 
     // 7. Clean Response
     res.status(200).json({
