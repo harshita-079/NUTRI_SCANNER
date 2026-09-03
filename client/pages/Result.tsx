@@ -611,8 +611,6 @@ export default function Result() {
   const location = useLocation();
   const backendResult = location.state as any;
 
-  console.log("BACKEND RESULT:", backendResult);
-  console.log("RECOMMENDATION:", backendResult?.recommendation);
   const dynamicAnalysis: Analysis = backendResult?.success
     ? {
         ...backendResult,
