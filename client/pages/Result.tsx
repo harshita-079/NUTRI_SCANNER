@@ -206,7 +206,7 @@ function ResultHeader({
               <Moon className="h-[18px] w-[18px]" />
             )}
           </button>
-          <button className="login-button hidden sm:flex">Log In</button>
+          {/* <button className="login-button hidden sm:flex">Log In</button> */}
         </div>
       </div>
     </header>

@@ -132,9 +132,9 @@ function Navbar({
               <Moon className="h-[18px] w-[18px]" />
             )}
           </button>
-          <button className="login-button">
+          {/* <button className="login-button">
             <CircleUserRound className="h-[17px] w-[17px]" /> Log In
-          </button>
+          </button> */}
         </div>
         <div className="flex items-center gap-2 md:hidden">
           <button
