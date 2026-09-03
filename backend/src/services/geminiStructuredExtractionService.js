@@ -106,11 +106,9 @@ const extractStructuredData = async (ocrText) => {
     "detail": ""
   },
 
-"recommendation": {
-    "recommendation": {
-      "title": "",
-      "detail": ""
-    }
+  "recommendation": {
+    "title": "",
+    "detail": ""
   }
 
   Rules:
