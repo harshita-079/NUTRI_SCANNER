@@ -1,5 +1,5 @@
-const extractIngredientsOnly = (structuredData) => {
-  return structuredData.ingredients || [];
-};
+// const extractIngredientsOnly = (structuredData) => {
+//   return structuredData.ingredients || [];
+// };
 
-export default extractIngredientsOnly;
+// export default extractIngredientsOnly;

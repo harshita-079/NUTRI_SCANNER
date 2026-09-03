@@ -110,7 +110,7 @@ const extractStructuredData = async (ocrText) => {
     "title": "",
     "detail": ""
   }
-
+}
   Rules:
   - Convert percentages into strings with units if present.
   - Keep INS / E-numbers exactly as written.
