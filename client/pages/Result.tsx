@@ -498,7 +498,20 @@ function ResultContent({ data }: { data: Analysis }) {
     <div className="mx-auto max-w-[1240px] px-5 pb-20 lg:px-8">
       <div className="result-summary">
         <div className="result-product-large">
-          <img src={data.product.image} alt={`${data.product.name} package`} />
+          <img
+            src={
+              data.product.image?.startsWith("http")
+                ? data.product.image
+                : `${(
+                    import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"
+                  ).replace(
+                    /\/$/,
+                    "",
+                  )}${data.product.image?.startsWith("/") ? "" : "/"}${data.product.image || ""}`
+            }
+            alt={`${data.product.name} package`}
+            className="h-full w-full object-contain"
+          />
         </div>
         <div className="min-w-0">
           <span className="category-badge">{data.product.category}</span>
@@ -606,35 +619,116 @@ export default function Result() {
   const [isDark, setIsDark] = useState(
     () => window.localStorage.getItem("nutriscan-theme") !== "light",
   );
-  const [state] = useState<AnalysisState>("success");
 
   const location = useLocation();
-  const backendResult = location.state as any;
 
-  const dynamicAnalysis: Analysis = backendResult?.success
-    ? {
-        ...backendResult,
+  const [dynamicAnalysis, setDynamicAnalysis] = useState<Analysis>(analysis);
 
-        product: {
-          image: backendResult.product?.image || analysis.product.image,
-          name: backendResult.product?.name || analysis.product.name,
-          brand: backendResult.product?.brand || analysis.product.brand,
-          category:
-            backendResult.product?.category || analysis.product.category,
-        },
-        score: backendResult.score || analysis.score,
-        rating: backendResult.rating || analysis.rating,
-        explanation: backendResult.explanation || analysis.explanation,
-        factors: backendResult.factors || analysis.factors,
-        good: backendResult.good || analysis.good,
-        watchOut: backendResult.watchOut || analysis.watchOut,
-        ingredients: backendResult.ingredients || analysis.ingredients,
-        nutrition: backendResult.nutrition || analysis.nutrition,
-        healthImpacts: backendResult.healthImpacts || analysis.healthImpacts,
-        healthTip: backendResult.healthTip || analysis.healthTip,
-        recommendation: backendResult.recommendation || analysis.recommendation,
+  const [state, setState] = useState<AnalysisState>("loading");
+
+  useEffect(() => {
+    const loadResult = async () => {
+      try {
+        // Case 1:
+        // User came from a fresh scan.
+        // Scan page already passed the result through location.state.
+        const backendResult = location.state as any;
+
+        if (backendResult?.success) {
+          setDynamicAnalysis({
+            ...analysis,
+            ...backendResult,
+
+            product: {
+              image: backendResult.product?.image || analysis.product.image,
+              name: backendResult.product?.name || analysis.product.name,
+              brand: backendResult.product?.brand || analysis.product.brand,
+              category:
+                backendResult.product?.category || analysis.product.category,
+            },
+
+            score: backendResult.score ?? analysis.score,
+            rating: backendResult.rating || analysis.rating,
+            explanation: backendResult.explanation || analysis.explanation,
+
+            factors: backendResult.factors || [],
+            good: backendResult.good || [],
+            watchOut: backendResult.watchOut || [],
+            ingredients: backendResult.ingredients || [],
+            nutrition: backendResult.nutrition || [],
+            healthImpacts: backendResult.healthImpacts || [],
+            healthTip: backendResult.healthTip || analysis.healthTip,
+            recommendation:
+              backendResult.recommendation || analysis.recommendation,
+          });
+
+          setState("success");
+          return;
+        }
+
+        // Case 2:
+        // User came from History.
+        // Example:
+        // /result?scan=6a9bcae007282162ab26e64d
+
+        const params = new URLSearchParams(location.search);
+        const scanId = params.get("scan");
+
+        if (!scanId) {
+          setState("empty");
+          return;
+        }
+
+        const API_BASE = (
+          import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"
+        ).replace(/\/$/, "");
+
+        console.log("Loading scan from history:", scanId);
+
+        const response = await fetch(`${API_BASE}/api/scans/${scanId}`);
+
+        const data = await response.json();
+
+        console.log("History result response:", data);
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || "Could not load scan result.");
+        }
+
+        setDynamicAnalysis({
+          ...analysis,
+          ...data,
+
+          product: {
+            image: data.product?.image || analysis.product.image,
+            name: data.product?.name || analysis.product.name,
+            brand: data.product?.brand || analysis.product.brand,
+            category: data.product?.category || analysis.product.category,
+          },
+
+          score: data.score ?? analysis.score,
+          rating: data.rating || analysis.rating,
+          explanation: data.explanation || analysis.explanation,
+
+          factors: data.factors || [],
+          good: data.good || [],
+          watchOut: data.watchOut || [],
+          ingredients: data.ingredients || [],
+          nutrition: data.nutrition || [],
+          healthImpacts: data.healthImpacts || [],
+          healthTip: data.healthTip || analysis.healthTip,
+          recommendation: data.recommendation || analysis.recommendation,
+        });
+
+        setState("success");
+      } catch (error) {
+        console.error("Failed to load result:", error);
+        setState("error");
       }
-    : analysis;
+    };
+
+    loadResult();
+  }, [location]);
 
   const toggleTheme = () =>
     setIsDark((current) => {
@@ -642,6 +736,7 @@ export default function Result() {
       window.localStorage.setItem("nutriscan-theme", next ? "dark" : "light");
       return next;
     });
+
   return (
     <div
       className={`min-h-screen font-sans ${isDark ? "dark-theme" : "bg-[#F7FBF7]"}`}

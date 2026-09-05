@@ -7,12 +7,26 @@ const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
-const extractStructuredData = async (ocrText) => {
+const extractStructuredData = async (ocrText, knownIngredients = []) => {
+  const knownBlock =
+    knownIngredients.length > 0
+      ? `
+  These ingredients are ALREADY KNOWN from a shared ingredient database.
+  Reuse their risk, description and assessment EXACTLY as provided below.
+  Do not re-analyze these ingredients. Only analyze ingredients that are
+  not present in this list.
+
+  KNOWN INGREDIENTS:
+  ${JSON.stringify(knownIngredients, null, 2)}
+  `
+      : "";
   const prompt = `
   You are an expert Indian food-label parser and nutrition analyst.
 
   The text comes from OCR and may contain noise, broken lines, spelling mistakes, and incomplete formatting.
 
+  ${knownBlock}
+  
   Your task is to:
   1. Extract structured food-label information.
   2. Analyze the product from a health perspective.

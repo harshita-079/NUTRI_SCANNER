@@ -308,22 +308,22 @@ function ScannerVisual() {
   );
 }
 
-function ScoreRing() {
+function ScoreRing({ score }: { score: number }) {
+  const safeScore = Math.max(0, Math.min(100, score));
+
   return (
     <div
-      className="relative flex h-[146px] w-[146px] items-center justify-center rounded-full"
+      className="result-score-ring"
       style={{
-        background:
-          "conic-gradient(#18D96B 0deg 162deg, #E7C84F 162deg 205deg, #E9F0EA 205deg 360deg)",
+        background: `conic-gradient(
+          #18D96B 0deg ${safeScore * 3.6}deg,
+          #DCE8DF ${safeScore * 3.6}deg 360deg
+        )`,
       }}
     >
-      <div className="flex h-[122px] w-[122px] flex-col items-center justify-center rounded-full bg-white">
-        <span className="text-[42px] font-bold leading-none text-[#101828]">
-          45<span className="text-[17px] font-medium text-[#98A2B3]">/100</span>
-        </span>
-        <span className="mt-1 text-xs font-semibold text-[#667085]">
-          Average Choice
-        </span>
+      <div className="bg-white dark:bg-[#0f172a] text-[#101828] dark:text-white">
+        <strong className="text-[#101828] dark:text-white">{safeScore}</strong>
+        <span className="text-[#667085] dark:text-slate-300">/100</span>
       </div>
     </div>
   );
@@ -567,7 +567,7 @@ function LegacyScanModal({ onClose }: { onClose: () => void }) {
             <input
               ref={inputRef}
               type="file"
-              accept="image/jpeg,image/png,image/jpg"
+              accept="image/*"
               className="hidden"
               onChange={chooseFile}
             />
@@ -859,7 +859,7 @@ function ScanModal({
             <input
               ref={inputRef}
               type="file"
-              accept="image/jpeg,image/png,image/jpg"
+              accept="image/*"
               className="hidden"
               onChange={chooseFile}
             />
@@ -952,7 +952,7 @@ export default function Index() {
                 <input
                   ref={uploadRef}
                   type="file"
-                  accept="image/jpeg,image/png,image/jpg"
+                  accept="image/*"
                   className="hidden"
                   onChange={(e) => {
                     const file = e.target.files?.[0];

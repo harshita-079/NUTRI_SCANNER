@@ -10,6 +10,8 @@ const __dirname = path.dirname(__filename);
 // If middleware file is: backend/src/middleware/uploadMiddleware.js
 const uploadDir = path.join(__dirname, "../../uploads");
 
+console.log("UPLOAD DIRECTORY:", uploadDir);
+
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }

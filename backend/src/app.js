@@ -6,7 +6,10 @@ import scanRoutes from "./routes/scanRoutes.js";
 
 const app = express();
 
-const allowedOrigins = ["http://localhost:8080", process.env.FRONTEND_URL];
+const allowedOrigins = [
+  "http://localhost:8080",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
 
 app.use(
   cors({
@@ -22,7 +25,7 @@ const __dirname = path.dirname(__filename);
 app.get("/", (req, res) => {
   res.send("Backend Running");
 });
-
+console.log("UPLOADS FOLDER:", path.join(__dirname, "../uploads"));
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.use("/api", scanRoutes);
