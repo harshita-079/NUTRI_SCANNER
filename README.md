@@ -49,7 +49,12 @@ This was a collaborative project. I contributed primarily to the **backend and A
 * Integrated Google Gemini API for structured analysis
 * Implemented database-first product lookup using MongoDB
 * Stored and reused analyzed product results
-* 
+
+##📸 Screenshots
+<img width="1897" height="922" alt="Nutri_1" src="https://github.com/user-attachments/assets/033da626-10c8-4638-bb7f-453f2fed1a5d" />
+<img width="1907" height="912" alt="nutri2" src="https://github.com/user-attachments/assets/270957a3-570d-407e-b067-44c53c2a0564" />
+<img width="1907" height="912" alt="nutri3" src="https://github.com/user-attachments/assets/a02de9a7-7f5a-4ad9-af35-b50583047780" />
+
 
 ## ⚙️ Setup
 
